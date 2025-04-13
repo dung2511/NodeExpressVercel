@@ -36,13 +36,7 @@ module.exports.create = async (req, res) => {
 }
 module.exports.update = async (req, res) => {
     const uniqueSlug = await createUniqueSlug(req.body.name, req.body.id);
-    var imageUrl = req.body.image;
-    if (req.file) {
-        const result = await cloudinary.uploader.upload(req.file.path, {
-            folder: "products"
-        })
-        imageUrl = result.secure_url
-    }
+    let imageUrl = req.body.image || req.file?.path;
     await News.updateOne({ _id: req.body.id }, {
         name: req.body.name,
         slug: uniqueSlug,

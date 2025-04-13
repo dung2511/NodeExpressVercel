@@ -16,7 +16,7 @@ module.exports.detail = async (req, res) => {
 }
 module.exports.update = async (req, res) => {
     const uniqueSlug = await createUniqueSlug(req.body.name, req.body.id);
-    var imageUrl = req.body.image;
+    let imageUrl = req.body.image || req.file?.path;
     if (req.file) {
         const result = await cloudinary.uploader.upload(req.file.path, {
             folder: "products"
@@ -43,13 +43,7 @@ module.exports.create = async (req, res) => {
     if (productFilter.length > 0) {
         res.json({ msg: "Sản phẩm đã tồn tại" })
     } else {
-        var imageUrl;
-        if (req.file) {
-            const result = await cloudinary.uploader.upload(req.file.path, {
-                folder: "products"
-            })
-            imageUrl = result.secure_url
-        }
+        let imageUrl = req.file?.path || "";
         var newProduct = new Products();
         req.body.name = req.body.name.toLowerCase().replace(/^.|\s\S/g, a => { return a.toUpperCase() })
         const uniqueSlug = await createUniqueSlug(req.body.name, req.body.id);
