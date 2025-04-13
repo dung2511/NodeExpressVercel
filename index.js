@@ -39,7 +39,6 @@ app.set('views', './views');
 app.use('/static', express.static('public'))
 
 var bodyParser = require("body-parser");
-const { log } = require('console');
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
