@@ -18,13 +18,7 @@ module.exports.create = async (req, res) => {
         if (filterNews.length > 0) {
             res.json({ msg: "Tin tức đã tồn tại" })
         } else {
-            var imageUrl;
-            if (req.file) {
-                const result = await cloudinary.uploader.upload(req.file.path, {
-                    folder: "news"
-                })
-                imageUrl = result.secure_url
-            }
+            let imageUrl = req.file?.path || "";
             var createNews = new News();
             req.body.name = req.body.name.toLowerCase().replace(/^.|\s\S/g, a => { return a.toUpperCase() })
             const uniqueSlug = await createUniqueSlug(req.body.name, req.body.id);
@@ -34,7 +28,7 @@ module.exports.create = async (req, res) => {
             createNews.short_content = req.body.short_content
             createNews.image = imageUrl
             createNews.save();
-            res.json({ msg: "Bạn đã thêm tin tức thành công" })
+            res.json({ msg: "Thêm tin tức thành công" })
         }
     } catch (error) {
         res.json(error)

@@ -4,9 +4,13 @@ const cloudinary = require("./cloudinary.config");
 
 const storage = new CloudinaryStorage({
     cloudinary: cloudinary,
-    params: {
-        format: async (req, file) => "png",
-        public_id: (req, file) => `${Date.now()}-${file.originalname}`,
+    params: async (req, res) => {
+        const folder = req.body.folder || ""
+        return {
+            folder: folder,
+            format: async (req, file) => "png",
+            public_id: (req, file) => `${Date.now()}-${file.originalname}`,
+        }
     },
 });
 
