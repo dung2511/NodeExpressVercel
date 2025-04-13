@@ -9,7 +9,6 @@ app.use(express.json());
 // API
 const productAPI = require('./API/Router/products.router')
 const userAPI = require('./API/Router/users.router')
-const emailAPI = require('./API/Router/email.router')
 const commentAPI = require('./API/Router/comment.router')
 const categoryAPI = require("./API/Router/category.router")
 const OrderAPI = require('./API/Router/order.router')
@@ -48,7 +47,6 @@ app.use(cors());
 app.use('/api/products', productAPI)
 app.use('/api/news', newsAPI)
 app.use('/api/users', userAPI)
-app.use('/email', emailAPI)
 app.use('/api/comment', commentAPI)
 app.use('/api/category', categoryAPI)
 app.use('/order', OrderAPI)
