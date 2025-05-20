@@ -23,33 +23,7 @@ module.exports.user = async (req, res) => {
         res.status(201).json(user)
     }
 
-
-
 }
-module.exports.detail = async (req, res) => {
-
-    const email = req.query.email
-
-    const username = req.query.username
-
-    const password = req.query.password
-
-    const query = [{ username: username }, { email: email }]
-
-    const user = await Users.findOne({ $or: query })
-
-    if (user.email !== email) {
-        res.send("Khong Tìm Thấy User")
-    } else {
-        if (user.password === password) {
-            res.json(user)
-        } else {
-            res.send("Sai Mat Khau")
-        }
-    }
-
-}
-
 module.exports.create = async (req, res) => {
     const { fullname, email, password, phone, confirmPassword } = req.body;
     const validateEmail = (email) => {
@@ -113,22 +87,44 @@ module.exports.login = async (req, res) => {
     try {
         const user = await Users.findOne({ email: email });
         if (!user) {
-            res.status(400).json({
-                msg: "Không tìm thấy tài khoản"
-            })
-        } else {
-            const auth = await bcrypt.compare(password, user.password)
-            if (auth) {
-                var token = jwt.sign(user._id.toJSON(), process.env.JWT_SECRET)
-                res.json({ msg: "Đăng nhập thành công", id_user: user._id, jwt: token })
-            } else {
-                res.status(400).json({
-                    msg: "Mật khẩu không chính xác"
-                })
-            }
+            return res.status(400).json({ msg: "Không tìm thấy tài khoản" });
         }
+
+        const isMatch = await bcrypt.compare(password, user.password);
+
+        if (!isMatch) {
+            return res.status(400).json({ msg: "Mật khẩu không chính xác" });
+        }
+
+        // ✅ Tạo JWT có thời gian sống 2 tiếng
+        const token = jwt.sign(
+            { userId: user._id },                   // payload
+            process.env.JWT_SECRET,                 // key bí mật
+            { expiresIn: "7200s" }                     // thời gian sống
+        );
+
+        return res.status(200).json({
+            msg: "Đăng nhập thành công",
+            id_user: user._id,
+            jwt: token
+        });
     } catch (error) {
         return res.status(500).json({ msg: "Lỗi server", error: err.message });
     }
 
+}
+module.exports.update = async (req, res) => {
+
+    const { id, ...data } = req.body
+    Object.keys(data).forEach(key => {
+        if (data[key] === undefined) {
+            delete data[key]
+        }
+    })
+    console.log(data);
+
+    await Users.updateOne({ _id: req.body.id }, {
+        $set: data
+    })
+    res.json({ msg: "Bạn đã cập nhật thành công" })
 }

@@ -49,8 +49,8 @@ app.use('/api/news', newsAPI)
 app.use('/api/users', userAPI)
 app.use('/api/comment', commentAPI)
 app.use('/api/category', categoryAPI)
-app.use('/order', OrderAPI)
-app.use('/location', locationAPI)
+app.use('/api/order', OrderAPI)
+app.use('/api/location', locationAPI)
 
 // Tạo API Admin
 

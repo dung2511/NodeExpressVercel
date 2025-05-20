@@ -21,8 +21,8 @@ module.exports.getDistrictByCity = async (req, res) => {
 module.exports.getAwardsByDistrict = async (req, res) => {
     try {
         const { cityCode, districtCode } = req.params;
-        const city = await Location.findOne({ code: cityCode });
-        if (!city) return res.status(404).json({ message: "Không tìm thấy thành phố" });
+        const city = await Location.findOne({ code: Number(cityCode) });
+        if (!city) return res.status(404).json({ message: "Không tìm thấy thành phố ở xã" });
 
         const district = city.districts.find((d) => d.code === Number(districtCode));
         if (!district) return res.status(404).json({ message: "Không tìm thấy quận / huyện" });
